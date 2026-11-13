@@ -1,0 +1,846 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Video Hazırlık Rehberi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Inter:wght@400;500;600&family=Literata:opsz,wght@7..72,400;7..72,500&display=swap">
+<style>
+/* Layout: tek sütun sihirbaz; üstte adım çubuğu, ortada tek adım, altta yapışkan ileri/geri */
+:root{
+  --bg:#f5f6f8;--surface:#fff;--ink:#1b2533;--muted:#5d6878;--line:#dfe3ea;
+  --accent:#c93a32;--accent-soft:#fbe9e7;--ok:#2f7d55;--ok-soft:#e5f3eb;--warn:#a86a00;--warn-soft:#fdf2dc;--chip:#eceff4;
+  --f-display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --f-body:"Inter",ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --f-read:"Literata",Georgia,serif;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#12171f;--surface:#1a212c;--ink:#e8ecf2;--muted:#9aa5b5;--line:#2b3442;
+  --accent:#f0675d;--accent-soft:#3a2224;--ok:#5cc08d;--ok-soft:#1d3329;--warn:#e7b04a;--warn-soft:#3a2f18;--chip:#232c39;color-scheme:dark}}
+*{box-sizing:border-box}
+html{padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55}
+.wrap{max-width:860px;margin:0 auto;padding-block:22px 120px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:20px}
+h1{font-family:var(--f-display);font-size:clamp(24px,4vw,32px);margin:0;line-height:1.15}
+h2{font-family:var(--f-display);font-size:clamp(21px,3.2vw,27px);margin:0;line-height:1.2;text-wrap:balance}
+h3{font-size:15px;margin:0}
+p{margin:0}
+.muted{color:var(--muted)}
+.top{display:flex;flex-direction:column;gap:4px}
+
+/* adım çubuğu */
+.steps{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.steps button{all:unset;cursor:pointer;display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--muted)}
+.steps button i{display:block;height:5px;border-radius:3px;background:var(--line)}
+.steps button.done i{background:var(--ok)}
+.steps button.cur i{background:var(--accent)}
+.steps button.cur{color:var(--ink);font-weight:600}
+.steps button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media (max-width:560px){.steps button span{display:none}.steps button.cur span{display:inline}}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px clamp(16px,3vw,30px);display:flex;flex-direction:column;gap:18px;min-width:0}
+.head{display:flex;flex-direction:column;gap:6px}
+.eyebrow{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:600}
+
+.b{font:inherit;font-size:14px;font-weight:500;cursor:pointer;border-radius:9px;padding:9px 15px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.b.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.b:disabled{opacity:.45;cursor:not-allowed}
+button.b:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+input[type=text],textarea,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 11px;width:100%}
+textarea{min-height:90px;resize:vertical}
+label.f{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--muted);flex:1 1 220px}
+
+/* konu listesi */
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:5px 11px;border-radius:999px;cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.topic{all:unset;box-sizing:border-box;cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:4px;background:var(--surface)}
+.topic:hover{border-color:var(--muted)}
+.topic:focus-visible{outline:2px solid var(--accent)}
+.topic[aria-checked="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-soft)}
+.topic b{font-size:14.5px}
+.topic span{font-size:12.5px;color:var(--muted)}
+
+/* metin */
+.part{display:grid;grid-template-columns:130px minmax(0,1fr);gap:4px 16px}
+.part .lbl{font-size:12px;font-weight:600;color:var(--muted);padding-top:4px}
+.part .lbl small{display:block;font-weight:400}
+.part p{font-family:var(--f-read);font-size:17.5px;line-height:1.65}
+.part.speaking p{background:var(--warn-soft);border-radius:6px}
+@media (max-width:600px){.part{grid-template-columns:minmax(0,1fr)}}
+.ph{background:var(--accent-soft);color:var(--accent);border-radius:4px;padding:0 3px}
+
+.note{border-radius:10px;padding:12px 14px;font-size:14px;background:var(--chip)}
+.note.warn{background:var(--warn-soft)}
+.note.ok{background:var(--ok-soft)}
+.note b{font-weight:600}
+
+/* notlar */
+.nrow{display:flex;flex-direction:column;gap:6px;padding-block:10px;border-top:1px solid var(--line)}
+.nrow:first-child{border-top:0}
+.nrow details{font-size:13.5px;color:var(--muted)}
+.nrow summary{cursor:pointer}
+.nrow details p{font-family:var(--f-read);margin-top:6px;color:var(--ink)}
+
+/* kayıt */
+.box{border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.meter{height:10px;background:var(--line);border-radius:5px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:var(--ok);transition:width .08s}
+.timer{font-variant-numeric:tabular-nums;font-size:30px;font-weight:600;font-family:var(--f-display)}
+.timer.over{color:var(--accent)}
+.recdot{display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--accent);margin-right:8px;vertical-align:middle}
+@media (prefers-reduced-motion:no-preference){.recdot{animation:blink 1s infinite}}
+@keyframes blink{50%{opacity:.25}}
+.prompter{border-radius:10px;background:var(--bg);padding:14px;display:flex;flex-direction:column;gap:8px;max-height:280px;overflow:auto}
+.prompter div{font-size:18px}
+.prompter small{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.05em}
+.takes{display:flex;flex-direction:column;gap:10px}
+.take{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;border-top:1px solid var(--line);padding-top:10px}
+.take audio,.take video{max-width:100%}
+.take video{width:320px}
+.take a{color:var(--accent);font-size:14px}
+
+/* kamera */
+.cam{position:relative;background:#000;border-radius:12px;overflow:hidden;aspect-ratio:16/9;max-width:100%}
+.cam video{width:100%;height:100%;object-fit:contain;transform:scaleX(-1);display:block}
+.cam .grid{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to right,transparent calc(33.33% - .5px),rgba(255,255,255,.35) calc(33.33% - .5px),rgba(255,255,255,.35) calc(33.33% + .5px),transparent calc(33.33% + .5px),transparent calc(66.66% - .5px),rgba(255,255,255,.35) calc(66.66% - .5px),rgba(255,255,255,.35) calc(66.66% + .5px),transparent calc(66.66% + .5px)),
+  linear-gradient(to bottom,transparent calc(33.33% - .5px),rgba(255,255,255,.35) calc(33.33% - .5px),rgba(255,255,255,.35) calc(33.33% + .5px),transparent calc(33.33% + .5px),transparent calc(66.66% - .5px),rgba(255,255,255,.35) calc(66.66% - .5px),rgba(255,255,255,.35) calc(66.66% + .5px),transparent calc(66.66% + .5px))}
+.cam .empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#cfd5de;font-size:14px;padding:16px;text-align:center}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}
+.stat{border-radius:10px;padding:10px 12px;background:var(--chip);font-size:13.5px}
+.stat b{display:block;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:2px}
+.stat.ok{background:var(--ok-soft)}.stat.warn{background:var(--warn-soft)}
+
+/* checklist */
+.checks{display:flex;flex-direction:column;gap:2px}
+.checks label{display:flex;gap:10px;align-items:flex-start;padding:9px 6px;border-radius:8px;cursor:pointer}
+.checks label:hover{background:var(--bg)}
+.checks input{margin-top:3px;width:18px;height:18px;accent-color:var(--ok);flex:none}
+.checks small{display:block;color:var(--muted)}
+.progress{display:flex;align-items:center;gap:10px;font-size:14px}
+.progress .meter{flex:1}
+
+ul.tips{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+
+/* alt bar */
+.nav{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);
+  padding-block:12px calc(12px + env(safe-area-inset-bottom,0px));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.nav .in{max-width:860px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.nav .where{font-size:13px;color:var(--muted);text-align:center;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:8px;font-size:14px;z-index:5}
+
+[hidden]{display:none!important}
+a.b{text-decoration:none;display:inline-flex;align-items:center}
+.take{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:12px 16px;align-items:start;border-top:1px solid var(--line);padding-top:12px}
+.take:first-child{border-top:0;padding-top:0}
+.take video{width:100%;border-radius:8px;background:#000;aspect-ratio:16/9}
+.take-info{display:flex;flex-direction:column;gap:6px;font-size:14px;min-width:0}
+@media (max-width:600px){.take{grid-template-columns:minmax(0,1fr)}}
+.ov{position:fixed;inset:0;background:#000;z-index:50;color:#fff;font-family:var(--f-body)}
+.ov video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transform:scaleX(-1)}
+.ov-notes{position:absolute;top:calc(env(safe-area-inset-top,0px) + 10px);max-height:62%;overflow:auto;background:rgba(0,0,0,.55);border-radius:10px;padding:10px 14px;font-size:16px;line-height:1.35;display:flex;flex-direction:column;gap:7px;max-width:42%}
+.ov-notes small{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;opacity:.65}
+.ov-notes.left{left:calc(env(safe-area-inset-left,0px) + 10px)}
+.ov-notes.right{right:calc(env(safe-area-inset-right,0px) + 10px)}
+.ov-notes.top{left:50%;transform:translateX(-50%);max-width:min(720px,80%);max-height:45%}
+.ov-count{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-size:min(30vw,30vh);font-weight:700;text-shadow:0 4px 30px rgba(0,0,0,.6)}
+.ov-port{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:#c93a32;padding:14px 20px;border-radius:12px;font-size:18px;font-weight:600;text-align:center}
+.ov-bar{position:absolute;left:0;right:0;bottom:0;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;
+  padding:14px max(16px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:linear-gradient(transparent,rgba(0,0,0,.6))}
+.ov-time{font-variant-numeric:tabular-nums;font-size:18px;font-weight:600}
+.ov-time.near{color:#ffcf5c}.ov-time.over{color:#ff6b61}
+.ov-stop{all:unset;cursor:pointer;width:64px;height:64px;border-radius:50%;border:4px solid #fff;display:flex;align-items:center;justify-content:center;box-sizing:border-box}
+.ov-stop::after{content:"";width:24px;height:24px;border-radius:5px;background:#e5483f}
+.ov-stop:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.ov-side{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.ov-btn{font:inherit;font-size:14px;color:#fff;background:rgba(255,255,255,.18);border:0;border-radius:8px;padding:8px 12px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>Video Hazırlık Rehberi</h1>
+    <p class="muted" id="hello"></p>
+  </div>
+  <nav class="steps" id="steps" aria-label="Adımlar"></nav>
+  <main id="view"></main>
+</div>
+<div class="nav"><div class="in">
+  <button class="b" id="prev" type="button">← Geri</button>
+  <div class="where" id="where"></div>
+  <button class="b primary" id="next" type="button">İleri →</button>
+</div></div>
+
+<script>
+const LABELS=[["Giriş",""],["Sorun","Soru 1"],["Bölüm bilgisi","Soru 2"],["Proje planı","Soru 3"],["İş birliği","Soru 4"],["Ölçüm ve süreklilik","Soru 5"],["Kapanış",""]];
+const T = [
+{k:"Acil durum",t:"Kalp masajını herkes öğrensin",w:"Mahallede, okulda ve iş yerinde uygulamalı temel yaşam desteği eğitimi.",
+tip:"Ailende ya da çevrende biri fenalaştığında kimsenin ne yapacağını bilmediği bir an yaşadıysan, Sorun kısmında onu anlat.",
+b:[
+"Merhaba, ben {ad}. {uni} Tıp Fakültesi birinci sınıf öğrencisiyim. Size kalp masajıyla ilgili bir proje fikrimden bahsedeceğim.",
+"İlk yardım dersinde kalp masajını öğrendiğimiz hafta eve gidip aileme sordum, biri yanınızda yere düşse ne yaparsınız diye. Kimse bilmiyordu, ben de o derse kadar bilmiyordum açıkçası. Kalbi duran birine ilk birkaç dakikada müdahale edilmezse kurtulma ihtimali çok düşüyor ve o dakikalarda yanında genelde ambulans değil, sıradan insanlar oluyor.",
+"Derste göğüs basısının nereye, ne derinlikte ve hangi hızda yapıldığını öğrendik. Maket üzerinde ilk denediğimde ben de çekiniyordum ama birkaç denemeden sonra rahatladım. Bence insanların da en çok bu çekinceyi aşması gerekiyor.",
+"Okullarda, muhtarlıklarda ve iş yerlerinde kırk beş dakikalık kısa eğitimler yapmak istiyorum. Herkes maket üzerinde kendisi deneyecek. Bir de kalp krizi ve inmenin belirtilerini, 112'yi arayınca neler söylemek gerektiğini anlatacağız.",
+"Bunu fakültedeki öğrenci kulübüyle ve acil tıptan bir hocamızın desteğiyle yapmayı düşünüyorum. Maketleri fakülteden ya da Kızılay'dan ödünç alabiliriz. Gönüllü arkadaşları önce biz eğitiriz, sonra onlar da eğitim vermeye başlar.",
+"Eğitimden önce ve sonra birkaç soruluk kısa bir test yaparız, birkaç ay sonra da katılanlara neleri hatırladıklarını sorarız. Her yıl yeni gelen birinci sınıflara devredersek proje biz mezun olduktan sonra da devam eder.",
+"Anlatmak istediklerim bu kadar. Dinlediğiniz için teşekkür ederim."]},
+
+{k:"Yaşlı sağlığı",t:"Evde doğru ilaç kullanımı",w:"Çok ilaç kullanan yaşlılarla birlikte basit, renkli ilaç çizelgeleri hazırlamak.",
+tip:"Büyükannen, büyükbaban ya da tanıdığın bir yaşlı ilaçlarını karıştırıyorsa Sorun kısmında bundan bahset.",
+b:[
+"Merhaba, ben {ad}, {uni} Tıp Fakültesi birinci sınıf öğrencisiyim.",
+"Yaşlılarımızın çoğu her gün birkaç çeşit ilaç kullanıyor. Hangisi neyin ilacı, aç mı tok mu içilecek, bir doz unutulursa ne yapılacak, bunlar zamanla karışabiliyor. Kendini iyi hissedince ilacı bırakan ya da aynı ilacı iki farklı kutudan içen insanlar oluyor.",
+"Ben birinci sınıftayım, ilaç yazmak ya da tedavi değiştirmek benim işim değil. Ama derslerde ilaçların vücutta nasıl etki ettiğine dair temel şeyleri öğreniyoruz. Mesela bir ilacın neden her gün aynı saatte alınması gerektiğini sade bir şekilde anlatabilirim.",
+"Gönüllü arkadaşlarla yaşlıların evlerini ya da huzurevlerini ziyaret etmeyi düşünüyorum. Kişinin ilaçlarını birlikte listeleyip büyük yazılı, renkli bir ilaç çizelgesi hazırlayacağız. Bir de haftalık ilaç kutusu bırakacağız. Aklına takılan bir şey olursa doktoruna sorması için not alacağız.",
+"Belediyenin evde bakım ekibiyle ve aile sağlığı merkezleriyle çalışmak istiyorum. Listeleri bir eczacının da kontrol etmesi gerekiyor, o yüzden gönüllü bir eczacıyla da görüşmeyi düşünüyorum. Gönüllü öğrenciler de önce kısa bir eğitim alacak.",
+"Birkaç hafta sonra aynı evlere tekrar gidip çizelgenin kullanılıp kullanılmadığına, ilaçların doğru alınıp alınmadığına bakacağız. Her dönem yeni gönüllüler katılırsa ziyaretler de devam eder.",
+"Projem kısaca bu. Dinlediğiniz için teşekkür ederim."]},
+
+{k:"Çocuk ve genç",t:"İnternetteki sağlık bilgisini sorgulamak",w:"Liselilerle sosyal medyadaki sağlık videolarını birlikte inceleyen atölyeler.",
+tip:"Çevrende internette gördüğü bir şeye inanıp yanlış bir şey yapan olduysa onu örnek ver.",
+b:[
+"Merhaba, ben {ad}. {uni} Tıp Fakültesi'nde birinci sınıftayım.",
+"Tıbba başladığımdan beri arkadaşlarım bana sık sık sağlıkla ilgili sorular soruyor. Çoğu da TikTok'ta ya da Instagram'da gördükleri bir videoyla ilgili oluyor. Videoda gördüğü bir diyeti deneyen ya da okuduğu belirtilerden kendine hastalık yakıştıran arkadaşlarım oldu. Gençler bu bilgileri çok kolay kabul ediyor.",
+"Fakültede ilk öğrendiğimiz şeylerden biri bir bilginin kaynağına bakmak oldu. Kim söylüyor, bir araştırmaya dayanıyor mu, bunlara bakmayı öğreniyoruz. Bunu liselilere de anlatabileceğimizi düşünüyorum.",
+"Liselerde sınıflarla atölyeler yapmak istiyorum. Sosyal medyadan gerçek sağlık videoları açıp birlikte bakacağız, doğru mu değil mi nasıl anlarız diye konuşacağız. Sonunda öğrenciler kendi doğru bilgi videolarını hazırlayacak, çünkü arkadaşlarının çektiği videoları daha çok izliyorlar.",
+"Okulların rehberlik servisleriyle ve il milli eğitim müdürlüğüyle görüşmeyi düşünüyorum. Gönüllüler fakülteden olacak, hazırladığımız içerikleri de bir hocamıza kontrol ettireceğiz.",
+"Atölyeden önce ve sonra kısa bir anket yapıp öğrencilerin yanlış bilgiyi ayırt edip edemediğine bakacağız. Okullarla bir kere bağlantı kurduktan sonra her yıl yeni sınıflarla devam etmek zor olmaz.",
+"Anlatacaklarım bu kadar, teşekkür ederim."]},
+
+{k:"Kronik hastalık",t:"Mahallede tansiyon ölçümü",w:"Pazar yerinde, cami çıkışında ayda bir tansiyon masası.",
+tip:"Ailende tansiyonunu geç öğrenen biri varsa Sorun kısmına bir cümleyle ekle.",
+b:[
+"Merhaba, ben {ad}, {uni} Tıp Fakültesi birinci sınıf öğrencisiyim.",
+"Çevremde tansiyonunu hiç ölçtürmemiş çok insan var, özellikle orta yaşlı erkekler. Bir şikâyetleri olmadığı için doktora gitmiyorlar. Ama yüksek tansiyon çoğu zaman belirti vermiyor ve yıllar içinde kalbe, böbreklere zarar verebiliyor.",
+"Tansiyon ölçmeyi derste öğrendik. Ölçülen değerin ne anlama geldiğini ve ne zaman doktora gidilmesi gerektiğini anlatabilirim. Tabii teşhis koymak gibi bir şey yapmayacağım, sadece doğru yere yönlendireceğim.",
+"Ayda bir, insanların zaten bulunduğu yerlerde, pazar yeri ya da cami çıkışı gibi, küçük bir masa açmak istiyorum. Tansiyon ölçüp tuz ve hareketle ilgili kısa bilgi vereceğiz. Değeri yüksek çıkanları aile hekimlerine yönlendirip ellerine küçük bir kart vereceğiz.",
+"Bunu aile sağlığı merkezi ve muhtarlıkla birlikte yapmak istiyorum. Fakülteden gönüllü arkadaşlarımız olacak ve hepsi ölçümü bir hocamızın gözetiminde öğrenmiş olacak.",
+"Kaç kişiyi ölçtüğümüzü ve yönlendirdiğimiz kişilerden kaçının gerçekten doktora gittiğini takip edeceğiz. Aynı yerlere düzenli gidersek insanlar da bizi tanır ve kendileri gelmeye başlar diye düşünüyorum.",
+"Dinlediğiniz için teşekkür ederim."]},
+
+{k:"Kronik hastalık",t:"Şekerim var mı bilmiyorum",w:"Kısa bir risk anketiyle diyabet riski yüksek kişileri aile hekimine yönlendirmek.",
+tip:"Ailende diyabet varsa bunu söylemen konuyu neden seçtiğini net gösterir.",
+b:[
+"Merhaba, ben {ad}. {uni} Tıp Fakültesi'nde birinci sınıftayım.",
+"Diyabet Türkiye'de çok yaygın ama birçok kişi şekeri olduğunu uzun süre bilmiyor. Fark edildiğinde de bazen gözlerde ya da böbreklerde sorunlar başlamış oluyor. Erken fark edilse beslenme ve hareketle bile çok şey değişebilir.",
+"Derslerde kan şekerinin nasıl düzenlendiğini, insülinin ne işe yaradığını öğreniyoruz. Bunu insanları korkutmadan, basit bir dille anlatabileceğimi düşünüyorum.",
+"Diyabet riskini ölçen, birkaç dakikada doldurulabilen bir anket var. Kilo, bel çevresi, ailede diyabet olup olmadığı gibi sorular soruyor. Bunu mahalle etkinliklerinde ve iş yerlerinde uygulamak istiyorum. Riski yüksek çıkanları aile hekimine yönlendireceğiz, herkese de beslenme ve yürüyüşle ilgili küçük bir bilgi kartı vereceğiz.",
+"Aile sağlığı merkezleriyle, belediyeyle ve fakültedeki gönüllü arkadaşlarımla çalışmak istiyorum. Gönüllüler anketi nasıl uygulayacaklarını önce bir hocamızdan öğrenecek.",
+"Kaç kişiye ulaştığımızı ve riskli çıkanlardan kaçının tahlil yaptırdığını takip edeceğiz. Anket kâğıt kalemle yapılabildiği için masrafı çok az, bu yüzden her yıl devam ettirmek kolay.",
+"Projem bu şekilde. Teşekkür ederim."]},
+
+{k:"Toplum",t:"Antibiyotiği doğru kullanmak",w:"Bilinçsiz antibiyotik kullanımına karşı eczane ve okul temelli bilgilendirme.",
+tip:"Çevrende grip olunca hemen antibiyotik isteyen ya da yarım bırakan biri varsa ondan bahsedebilirsin.",
+b:[
+"Merhaba, ben {ad}, {uni} Tıp Fakültesi birinci sınıf öğrencisiyim.",
+"Bizde biraz boğaz ağrısı olunca hemen antibiyotik isteniyor. Evde kalan kutudan içiliyor, iki gün sonra iyileşince bırakılıyor. Oysa soğuk algınlığının çoğunu virüsler yapıyor ve antibiyotik virüslere etki etmiyor. Böyle kullanınca da bakteriler zamanla ilaca direnç kazanıyor.",
+"Derslerde bakteriyle virüsün farkını, ilaç direncinin nasıl geliştiğini öğreniyoruz. Bunu herkesin anlayacağı şekilde, günlük hayattan örneklerle anlatabilirim.",
+"Mahallelerde ve okul veli toplantılarında kısa sohbetler yapmak istiyorum. Eczanelere antibiyotiğin neden her zaman gerekmediğini anlatan sade broşürler bırakacağız. Öğrenciler için de bakteriyle virüsün farkını anlatan küçük bir oyun hazırlamayı düşünüyorum.",
+"Eczacılar odasıyla, aile hekimleriyle ve okulların rehberlik servisleriyle çalışmak istiyorum. Hazırladığımız içerikleri de enfeksiyon hastalıklarından bir hocamıza kontrol ettireceğiz.",
+"Sohbetlerden önce ve sonra birkaç soruluk bir anket yapacağız. Broşürler bir kere hazırlandıktan sonra her yıl tekrar kullanılabilir, yeni gönüllülerin sadece anlatmayı öğrenmesi yeterli.",
+"Anlatmak istediğim bu. Dinlediğiniz için teşekkürler."]},
+
+{k:"Çocuk ve genç",t:"İlkokulda el yıkama",w:"İlkokullarda oyunla el yıkama alışkanlığı kazandırmak.",
+tip:"Çocuklarla aran iyiyse ya da küçük kardeşin varsa bundan bahsedebilirsin.",
+b:[
+"Merhaba, ben {ad}. {uni} Tıp Fakültesi'nde birinci sınıftayım.",
+"İlkokul çağındaki çocuklar arasında ishal ve soğuk algınlığı gibi enfeksiyonlar çok kolay yayılıyor. Bunların bir kısmı doğru el yıkamayla önlenebilir. Ama çoğu çocuk ellerini birkaç saniye suya tutup çıkıyor, açıkçası birçok yetişkin de öyle yapıyor.",
+"Mikropların nasıl bulaştığını ve sabunun neden sadece sudan daha etkili olduğunu derste öğrendik. Bunu çocuklara korkutmadan, eğlenceli bir şekilde anlatmak istiyorum.",
+"İlkokullarda sınıflara gidip floresan bir krem kullanacağız. Çocuklar ellerine sürüp yıkayacak, sonra ışığın altında nerelerin temizlenmediğini görecekler. Yirmi saniyelik bir el yıkama şarkısı öğreteceğiz ve lavaboların yanına resimli kartlar asacağız.",
+"Okul yönetimleri ve sınıf öğretmenleriyle birlikte, fakültedeki arkadaşlarımla yapmak istiyorum. Öğretmenler sonra kendileri de tekrar edebilsin diye kısa bir rehber bırakacağız.",
+"Öğretmenlerden eğitimden önceki ve sonraki birkaç haftada hastalık yüzünden gelmeyen öğrenci sayısını not etmelerini isteyeceğiz. Aynı etkinliği her yıl yeni birinci sınıflarla tekrarlayabiliriz.",
+"Dinlediğiniz için teşekkür ederim."]},
+
+{k:"Çocuk ve genç",t:"Çocuklarda diş sağlığı",w:"Diş fırçalamayı ve şekerli atıştırmalıkları anlatan okul programı.",
+tip:"Diş hekimliği öğrencileriyle ortak çalışma fikrini öne çıkarabilirsin.",
+b:[
+"Merhaba, ben {ad}, {uni} Tıp Fakültesi birinci sınıf öğrencisiyim.",
+"Çocuklarda diş çürüğü çok yaygın ve çoğu zaman önemsenmiyor, süt dişi nasılsa değişecek deniyor. Ama çürük dişler ağrıya, yemek yemede sorunlara, hatta okula gidememeye kadar gidebiliyor. Bazı evlerde düzenli diş fırçalama alışkanlığı hiç yok.",
+"Derslerde şekerin dişte nasıl çürüğe yol açtığını ve ağız sağlığının vücudun geri kalanını nasıl etkilediğini öğreniyoruz. Bunu çocukların anlayacağı bir şekilde anlatabilirim.",
+"İlkokullarda büyük bir diş maketiyle doğru fırçalamayı göstermek istiyorum. Her çocuğa diş fırçası ve macun vereceğiz. Bir ay boyunca dolduracakları bir fırçalama takvimi bırakacağız, ay sonunda dolduranlara küçük bir sertifika vereceğiz. Velilere de kısa bir bilgi notu göndereceğiz.",
+"Bunu diş hekimliği fakültesindeki öğrencilerle birlikte yapmak istiyorum, çünkü bu konuyu bizden daha iyi biliyorlar. Fırça ve macun için de yerel eczanelerden ya da firmalardan destek isteyebiliriz.",
+"Ay sonunda takvimleri toplayıp kaç çocuğun düzenli fırçaladığına bakacağız. Her yıl aynı okullara giderek değişimi takip edebiliriz.",
+"Projem bu. Teşekkür ederim."]},
+
+{k:"Çocuk ve genç",t:"Üniversitede akran desteği",w:"Üniversite öğrencileri için ruh sağlığı farkındalığı ve doğru yere yönlendirme.",
+tip:"Yeni bir şehre gelip ilk dönem zorlandıysan bunu dürüstçe söylemek çok samimi durur.",
+b:[
+"Merhaba, ben {ad}. {uni} Tıp Fakültesi'nde birinci sınıftayım.",
+"Üniversiteye başlayınca çoğumuz ilk defa ailemizden uzakta yaşamaya başladık. Yeni bir şehir, yoğun dersler, sınav stresi derken birçok arkadaşım gerçekten zorlandı. Ama çok azı yardım istedi, çünkü psikolojik destek almak hâlâ biraz çekinilen bir şey.",
+"Ben psikolog değilim, terapi yapmak gibi bir şey düşünmüyorum. Ama derslerde stresin vücudu nasıl etkilediğini, uykunun ne kadar önemli olduğunu öğreniyoruz. Bir arkadaşı dinlemeyi ve onu doğru yere yönlendirmeyi de öğrenebilirim.",
+"Gönüllü öğrencilerin kısa bir akran desteği eğitimi almasını istiyorum. Sonra yurtlarda ve fakültelerde sınav kaygısı, uyku, yalnızlık gibi konularda küçük sohbet buluşmaları yapacağız. Amacımız, zorlanan birinin üniversitenin psikolojik danışmanlık merkezine gitmesini kolaylaştırmak.",
+"Üniversitenin psikolojik danışmanlık merkeziyle ve psikiyatriden bir hocamızla çalışmak istiyorum. Eğitimi onlar verecek, böylece gönüllüler nerede durmaları gerektiğini de bilecek.",
+"Buluşmalardan önce ve sonra isimsiz kısa anketler yapacağız. Danışmanlık merkezine başvuran öğrenci sayısı artarsa bunu da iyi bir işaret olarak görürüm. Her yıl yeni gönüllüler yetiştirirsek proje devam eder.",
+"Dinlediğiniz için teşekkür ederim."]},
+
+{k:"Çocuk ve genç",t:"Gençler ve elektronik sigara",w:"Liselilerle sigara ve elektronik sigara üzerine akran eğitimi.",
+tip:"Lisede çevrende elektronik sigara kullanan arkadaşların olduysa, isim vermeden bunu söyleyebilirsin.",
+b:[
+"Merhaba, ben {ad}, {uni} Tıp Fakültesi birinci sınıf öğrencisiyim.",
+"Lisedeyken çevremde sigara içmeyen ama elektronik sigara kullanan çok kişi vardı. Çoğu bunun zararsız olduğunu, sadece buhar olduğunu düşünüyordu. Ama içinde nikotin var, bağımlılık yapıyor ve gençlerin akciğerleri de beyni de hâlâ gelişmeye devam ediyor.",
+"Derslerde solunum sistemini ve nikotinin bağımlılığı nasıl oluşturduğunu öğreniyoruz. Bunu yasakları sayarak değil, ne olduğunu açıklayarak anlatmak istiyorum.",
+"Liselerde sınıflarla sohbetler yapmak istiyorum ama sadece biz konuşmayacağız. Her sınıftan gönüllü birkaç öğrenciyi eğiteceğiz, onlar da kendi arkadaşlarıyla konuşacak, çünkü gençler yaşıtlarını daha çok dinliyor. Bırakmak isteyenleri de sigara bırakma polikliniklerine yönlendireceğiz.",
+"Okul rehberlik servisleriyle, il sağlık müdürlüğüyle ve göğüs hastalıklarından bir hocamızla çalışmak istiyorum.",
+"Programdan önce ve sonra isimsiz bir anket yapıp öğrencilerin bilgisinde ve düşüncesinde bir değişiklik olmuş mu ona bakacağız. Eğitilen öğrenciler her yıl bir alt sınıftan yenilerini yetiştirirse program okulda devam edebilir.",
+"Teşekkür ederim."]},
+
+{k:"Kadın sağlığı",t:"Meme kanserinde erken tanı",w:"Kadınlara meme sağlığını ve ücretsiz taramaları anlatan mahalle buluşmaları.",
+tip:"Ailende ya da tanıdıklarında bu hastalıkla karşılaşan olduysa onu kısaca anabilirsin.",
+b:[
+"Merhaba, ben {ad}. {uni} Tıp Fakültesi'nde birinci sınıftayım.",
+"Meme kanseri kadınlarda en sık görülen kanser türü ve erken fark edildiğinde tedavi şansı çok yüksek. Ama birçok kadın ücretsiz tarama yapıldığını bilmiyor ya da korktuğu için gitmiyor. Özellikle annelerimiz, kendileri dışında herkesin sağlığıyla ilgileniyor.",
+"Anatomi derslerinde memenin yapısını öğreniyoruz. Kadınlara kendi bedenlerini tanımalarını, bir değişiklik fark ettiklerinde de beklemeden doktora gitmelerini anlatabilirim.",
+"Mahallelerde, kadınların rahat edebileceği ortamlarda küçük buluşmalar yapmak istiyorum. Hangi değişikliklerin önemli olduğunu, kırk yaşından sonra KETEM'lerde ücretsiz mamografi çekildiğini ve randevunun nasıl alındığını anlatacağız. İsteyenlerin randevusunu orada birlikte alabiliriz.",
+"KETEM'lerle, aile sağlığı merkezleriyle, belediyenin kadın merkezleriyle ve fakültedeki gönüllü arkadaşlarımla çalışmak istiyorum. Anlatacaklarımızı genel cerrahiden bir hocamıza kontrol ettireceğiz.",
+"Kaç kadına ulaştığımızı ve bunlardan kaçının taramaya gittiğini takip edeceğiz. Ekim ayındaki meme kanseri farkındalık ayında bunu her yıl tekrarlarsak kalıcı bir etkinlik olabilir.",
+"Dinlediğiniz için teşekkür ederim."]},
+
+{k:"Çocuk ve genç",t:"Aşı konusunda kararsız aileler",w:"Aşı konusunda tereddüt eden ailelerin sorularını dinleyip doğru bilgi vermek.",
+tip:"Bu konuda kimseyi suçlamayan, sakin bir ton önemli.",
+b:[
+"Merhaba, ben {ad}, {uni} Tıp Fakültesi birinci sınıf öğrencisiyim.",
+"Son yıllarda çocuğunu aşılatmak istemeyen ya da bu konuda kararsız kalan aile sayısı arttı. Bu ailelerin çoğu kötü niyetli değil, internette okuduklarından endişeleniyorlar. Ama aşılanmayan çocuk sayısı arttıkça kızamık gibi hastalıklar yeniden görülmeye başlıyor.",
+"Derslerde bağışıklık sisteminin nasıl çalıştığını, aşının vücutta ne yaptığını öğreniyoruz. Bunu ailelere ders verir gibi değil, sorularını cevaplayarak anlatmak istiyorum.",
+"Aile sağlığı merkezlerinde, bebeklerin aşı günlerinde bekleme salonlarında küçük bir soru cevap köşesi kurmak istiyorum. Ailelerin sorularını dinleyip kaynağı belli, sade broşürler vereceğiz. Cevaplayamadığımız soruları da aile hekimine yönlendireceğiz.",
+"Aile hekimleriyle, il sağlık müdürlüğüyle ve çocuk sağlığından bir hocamızla çalışmak istiyorum. Gönüllüler önce zor sorulara nasıl yaklaşacaklarını öğrenecekleri bir eğitim alacak.",
+"Konuştuğumuz kararsız ailelerden kaçının aşı takvimine devam ettiğini aile hekimleriyle birlikte takip edeceğiz. En sık gelen soruları not edip broşürleri her yıl güncelleyeceğiz.",
+"Projem bu şekilde. Teşekkür ederim."]},
+
+{k:"Acil durum",t:"Depreme hazır mahalle",w:"Deprem sonrası ilk yardım, kanama durdurma ve hazırlık eğitimi.",
+tip:"6 Şubat depremleri seni nasıl etkilediyse bir cümleyle söylemen yeterli, uzatma.",
+b:[
+"Merhaba, ben {ad}. {uni} Tıp Fakültesi'nde birinci sınıftayım.",
+"Bir deprem ülkesinde yaşıyoruz. 6 Şubat'ta da gördük ki depremden hemen sonra insanlara ilk yardım edenler çoğu zaman sağlık ekipleri değil, komşular oluyor. Ama çoğumuz kanamayı nasıl durduracağımızı ya da yaralı birini nasıl taşıyacağımızı bilmiyoruz.",
+"İlk yardım dersinde kanama kontrolünü, kırıkta sabitlemeyi ve bilinç kontrolünü öğrendik. Bunlar herkesin öğrenebileceği ama doğru öğrenilmesi gereken şeyler.",
+"Apartman yöneticileriyle birlikte mahallelerde iki saatlik eğitimler düzenlemek istiyorum. Kanama durdurmayı ve basit sabitlemeyi uygulamalı göstereceğiz. Her apartmanda bir kişinin ilk yardımdan sorumlu olmasını ve evlerde deprem çantası hazırlanmasını teşvik edeceğiz.",
+"AFAD, Kızılay, muhtarlıklar ve fakültedeki öğrenci kulübüyle çalışmak istiyorum. Eğitim alan mahalle sakinleri de kendi binalarında sorumlu olacak.",
+"Eğitim öncesi ve sonrası kısa testler yapacağız, kaç apartmanda sorumlu kişi seçildiğini ve kaç evde deprem çantası hazırlandığını sayacağız. Eğitimi her yıl deprem haftasında tekrarlayabiliriz.",
+"Dinlediğiniz için teşekkür ederim."]},
+
+{k:"Yaşlı sağlığı",t:"Yaşlılarda düşmeleri önlemek",w:"Yaşlıların evlerinde düşme riskini azaltan ev ziyaretleri ve basit egzersizler.",
+tip:"Tanıdığın bir yaşlı düşüp uzun süre yataktan kalkamadıysa bunu anlatabilirsin.",
+b:[
+"Merhaba, ben {ad}, {uni} Tıp Fakültesi birinci sınıf öğrencisiyim.",
+"Yaşlılarda düşmek düşündüğümüzden daha tehlikeli. Basit bir düşme kalça kırığına ve uzun süre yatağa bağlı kalmaya yol açabiliyor. Bu düşmelerin çoğu da evde, kayan bir halı ya da karanlık bir koridor yüzünden oluyor.",
+"Derslerde kas ve iskelet sistemini, yaşla birlikte dengenin neden bozulduğunu öğreniyoruz. Bu da bir evde neyin risk oluşturduğunu görmemi kolaylaştırıyor.",
+"Gönüllülerle yaşlıların evlerini ziyaret edip basit bir kontrol listesiyle evi birlikte gezmek istiyorum. Halılara, ışıklara, banyoya, merdivenlere bakacağız. Gerekirse kaymaz bant ya da gece lambası gibi ucuz şeyler takacağız, evde yapılabilecek basit denge egzersizlerini de göstereceğiz.",
+"Belediyenin yaşlı hizmetleri birimiyle, aile sağlığı merkezleriyle ve fizik tedaviden bir hocamızla çalışmak istiyorum. Malzemeler için yerel esnaftan destek isteyebiliriz.",
+"Ziyaret ettiğimiz evlere altı ay sonra tekrar gidip düşme olup olmadığını soracağız. Kontrol listesi basit olduğu için her yıl yeni gönüllülerle devam ettirebiliriz.",
+"Teşekkür ederim."]},
+
+{k:"Toplum",t:"Mahallede yürüyüş grupları",w:"Hareketsiz yaşayan yetişkinler için haftalık rehberli yürüyüşler.",
+tip:"Kendin düzenli yürüyorsan ya da spor yapıyorsan bunu söyleyebilirsin.",
+b:[
+"Merhaba, ben {ad}. {uni} Tıp Fakültesi'nde birinci sınıftayım.",
+"Çevremdeki yetişkinlerin çoğu günün büyük kısmını oturarak geçiriyor. Hareketsizlik kalp hastalığı, diyabet, bel ağrısı gibi birçok sorunla ilişkili. Ama insanlara spor yapın demek pek işe yaramıyor, tek başına başlamak zor geliyor.",
+"Fizyoloji derslerinde egzersizin kalbe, damarlara ve kan şekerine etkisini öğreniyoruz. Haftada birkaç kez yapılan tempolu bir yürüyüşün bile fark yarattığını anlatabilirim.",
+"Mahalle parklarında haftada iki gün rehberli yürüyüş grupları kurmak istiyorum. Yürüyüşten önce kısa bir ısınma yapacağız, arada da birkaç dakikalık sağlık sohbetleri olacak. Katılanlar adım sayılarını bir takvime yazacak.",
+"Belediyenin spor birimiyle, muhtarlıklarla ve fakültedeki gönüllü arkadaşlarımla yapmayı düşünüyorum. Bir süre sonra grubun düzenli katılımcıları da yeni gelenlere yol gösterebilir.",
+"Başta ve üç ay sonra katılımcıların bel çevresini, tansiyonunu ve kendilerini nasıl hissettiklerini not edeceğiz. Grup bir süre sonra biz olmadan da yürümeye devam ederse bunu başarı sayarım.",
+"Dinlediğiniz için teşekkür ederim."]},
+
+{k:"Çocuk ve genç",t:"Beslenme çantasında ne var?",w:"İlkokul çocukları ve aileleriyle sağlıklı beslenme atölyeleri.",
+tip:"Çocuklarla iyi anlaşıyorsan bunu söylemen projeyi senin projen gibi gösterir.",
+b:[
+"Merhaba, ben {ad}, {uni} Tıp Fakültesi birinci sınıf öğrencisiyim.",
+"Çocuklarda kilo fazlalığı giderek artıyor. Beslenme çantalarında çoğu zaman paketli kek, cips ve hazır meyve suyu oluyor. Bu alışkanlıklar ileride diyabet ve tansiyon gibi hastalıklara da zemin hazırlıyor.",
+"Derslerde besinlerin vücutta nasıl kullanıldığını, fazla şekerin ne yaptığını öğreniyoruz. Bunu çocuklara oyunlarla anlatabileceğimi düşünüyorum.",
+"İlkokullarda çocuklarla etiket okuma oyunları oynamak istiyorum. Mesela bir kutu meyve suyunda kaç küp şeker olduğunu birlikte göreceğiz. Velilere de ucuz ve pratik beslenme çantası önerileri içeren bir kitapçık hazırlayacağız. Bir hafta boyunca da en sağlıklı beslenme çantası yarışması yapacağız.",
+"Okul yönetimleriyle, okul aile birlikleriyle ve beslenme ve diyetetik bölümündeki öğrencilerle çalışmak istiyorum. Kitapçığı onlarla birlikte hazırlamak daha doğru olur.",
+"Atölyeden önce ve sonra birkaç gün beslenme çantalarındaki yiyecekleri not edeceğiz. Kitapçık ve oyunlar bir kere hazırlanınca her yıl yeni sınıflarla kullanılabilir.",
+"Projem bu. Teşekkür ederim."]},
+
+{k:"Toplum",t:"İşitme engelliler için hastane",w:"İşitme engelli bireyler için hastanede iletişim kartları ve temel işaret dili.",
+tip:"İşaret dili biliyorsan ya da öğrenmeye başladıysan videoda kısa bir selam vermek akılda kalır.",
+b:[
+"Merhaba, ben {ad}. {uni} Tıp Fakültesi'nde birinci sınıftayım.",
+"İşitme engelli birinin hastanede neler yaşadığını düşündüğümde aklıma şunlar geliyor: Sırası geldiğinde ismini duyamıyor, nerenin ağrıdığını anlatmakta zorlanıyor, kendisine söylenenleri tam anlayamıyor. Bu yüzden birçoğu çok gerekmedikçe hastaneye gitmiyor.",
+"Daha birinci sınıfta hastayla iletişimin ne kadar önemli olduğunu öğreniyoruz. Hasta derdini anlatamazsa doğru tanı koymak da zorlaşıyor.",
+"İki şey yapmak istiyorum. Birincisi, ağrı, ateş, bulantı gibi sık şikâyetleri resimlerle gösteren iletişim kartları hazırlayıp sağlık kuruluşlarına dağıtmak. İkincisi, tıp öğrencileri ve sağlık çalışanları için temel işaret dili atölyeleri düzenlemek.",
+"İşitme engelliler derneğiyle, işaret dili eğitmenleriyle ve hastanelerin hasta hakları birimleriyle çalışmak istiyorum. Kartları işitme engelli kişilerle birlikte deneyip düzelteceğiz.",
+"Kartların kullanıldığı yerlerden ve işitme engelli kullanıcılardan geri bildirim alacağız. Atölyelere katılan öğrenci sayısını takip edeceğiz, ilgi olursa fakültede bunun seçmeli ders olmasını önerebiliriz.",
+"Dinlediğiniz için teşekkür ederim."]},
+
+{k:"Toplum",t:"Yabancı uyruklu aileler için rehber",w:"Türkçe bilmeyen aileler için sağlık sistemini anlatan resimli, çok dilli rehber.",
+tip:"İkinci bir dil biliyorsan bunu söyle, projede doğrudan işe yarar.",
+b:[
+"Merhaba, ben {ad}, {uni} Tıp Fakültesi birinci sınıf öğrencisiyim.",
+"Şehrimizde Türkçe bilmeyen ya da az bilen birçok aile yaşıyor. Aile hekimine nasıl kayıt olunacağını, çocuk aşılarının ne zaman yapıldığını bilmiyorlar. Bu yüzden basit bir sorun için acile gidiyorlar ya da hiç gitmiyorlar.",
+"Halk sağlığıyla ilgili derslerde koruyucu sağlık hizmetlerinin ne kadar önemli olduğunu öğreniyoruz. Bu ailelerin de bu hizmetlerden yararlanabilmesini istiyorum.",
+"Aile hekimliğini, aşı takvimini, gebelik takibini ve acil durumları anlatan, resimli kısa bir rehber hazırlamak istiyorum. Bunu birkaç dile çevirip telefondan QR kodla açılabilir hale getireceğiz. Toplum merkezlerinde de ailelerle küçük bilgilendirme buluşmaları yapacağız.",
+"Toplum merkezleriyle, bu alanda çalışan derneklerle ve iki dil bilen gönüllü öğrencilerle çalışmak istiyorum. Rehberi o toplulukların temsilcileriyle birlikte deneyip düzelteceğiz.",
+"Buluşmalara katılan ailelerden kaçının aile hekimine kaydolduğunu ve çocuklarının aşılarına devam ettiğini takip edeceğiz. Rehber dijital olduğu için bir şey değiştiğinde kolayca güncelleyebiliriz.",
+"Teşekkür ederim."]},
+
+{k:"Toplum",t:"Düzenli kan bağışı",w:"Üniversite öğrencilerinden düzenli kan bağışçısı topluluğu kurmak.",
+tip:"Daha önce kan verdiysen ya da bir yakının kana ihtiyaç duyduysa bunu kısaca anlat.",
+b:[
+"Merhaba, ben {ad}. {uni} Tıp Fakültesi'nde birinci sınıftayım.",
+"Sosyal medyada sık sık acil kan aranıyor paylaşımları görüyoruz. Bunun bir sebebi, insanların genelde sadece bir yakını ihtiyaç duyduğunda kan vermesi. Kan uzun süre saklanamadığı için bağışın düzenli olması gerekiyor. Gençler de genelde iğneden korktuğu ya da nasıl yapıldığını bilmediği için hiç vermiyor.",
+"Derslerde kanın yapısını ve vücudun bağışlanan kanı ne kadar sürede yerine koyduğunu öğreniyoruz. Bunu anlatınca insanların çekincesi genelde azalıyor.",
+"Kampüste düzenli kan bağışçılarından oluşan bir topluluk kurmak istiyorum. Kızılay'la birlikte her dönem bağış günleri düzenleyeceğiz. İlk kez verecekler için sürecin nasıl işlediğini gösteren kısa videolar hazırlayacağız, düzenli bağışçılara da bir sonraki bağış zamanı geldiğinde hatırlatma göndereceğiz.",
+"Kızılay'la, üniversitedeki öğrenci topluluklarıyla ve spor kulüpleriyle çalışmak istiyorum. Her fakülteden bir gönüllü temsilci olursa bütün kampüse ulaşabiliriz.",
+"Her bağış gününde kaç ünite kan toplandığını ve kaç kişinin ikinci kez geldiğini takip edeceğiz. Topluluk olarak kurulduğu için her yıl yeni öğrencilerle devam edebilir.",
+"Dinlediğiniz için teşekkür ederim."]},
+
+{k:"Yaşlı sağlığı",t:"Alzheimer hastalarına bakanlar",w:"Alzheimer hastasına bakan aile üyeleri için bilgi ve destek buluşmaları.",
+tip:"Ailende bakıma muhtaç biri varsa ve bakan kişinin ne kadar yorulduğunu gördüysen bunu anlatabilirsin.",
+b:[
+"Merhaba, ben {ad}, {uni} Tıp Fakültesi birinci sınıf öğrencisiyim.",
+"Alzheimer hastası olan bir evde hastaya genelde bir aile üyesi bakıyor, çoğu zaman bir kızı ya da eşi. Bu kişiler yıllarca kendilerine vakit ayıramıyor. Yorgunluk, uykusuzluk ve depresyon çok sık görülüyor ama onların nasıl olduğu pek sorulmuyor.",
+"Derslerde beynin hafızayla ilgili bölgelerini ve bu hastalıkta neler değiştiğini öğreniyoruz. Hastanın neden aynı soruyu tekrar tekrar sorduğunu anlamak, bakan kişinin de işini kolaylaştırıyor.",
+"Ayda bir, hastaya bakan kişiler için buluşmalar düzenlemek istiyorum. İlk kısımda hastalıkla ilgili pratik bilgiler vereceğiz, ikinci kısımda da sadece onların konuştuğu bir sohbet olacak. O sırada gönüllüler hastalarla vakit geçirecek, böylece bakım verenler biraz dinlenebilecek.",
+"Alzheimer derneğiyle, belediyenin evde bakım hizmetleriyle ve nöroloji ile psikiyatriden hocalarımızla çalışmak istiyorum. Gönüllüler hastayla nasıl iletişim kuracaklarını önce bir eğitimde öğrenecek.",
+"Bakım verenlerin ne kadar yorgun olduğunu başta ve birkaç ay sonra kısa bir ölçekle değerlendireceğiz. Katılımcılar zamanla birbirlerine de destek olmaya başlarsa grup kendi kendine devam edebilir.",
+"Teşekkür ederim."]}
+];
+const STEPS=["Konu","Metin","Notlar","Dinle","Çekim","Son kontrol"];
+
+/* ---------- durum ---------- */
+const KEY="vhr-v1";
+let S={step:0,topic:null,ad:"Selinay Kavak",uni:"Süleyman Demirel Üniversitesi",story:"",notes:{},checks:{},tech:{},cat:"Tümü"};
+try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s)S=Object.assign(S,s);}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function fill(t,html){
+  const ad=S.ad.trim(),uni=S.uni.trim();
+  if(!html)return t.replace(/\{ad\}/g,ad||"[Adın]").replace(/\{uni\}/g,uni||"[Üniversite]");
+  return esc(t).replace(/\{ad\}/g,ad?esc(ad):'<span class="ph">[Adın]</span>').replace(/\{uni\}/g,uni?esc(uni):'<span class="ph">[Üniversite]</span>');
+}
+function paras(){return S.topic==null?[]:T[S.topic].b.map(p=>fill(p,false));}
+function words(arr){return arr.join(" ").split(/\s+/).filter(Boolean).length;}
+function fmt(sec){sec=Math.max(0,Math.round(sec));return Math.floor(sec/60)+":"+String(sec%60).padStart(2,"0");}
+function toast(m){const t=document.createElement("div");t.className="toast";t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2000);}
+function myNotes(){if(S.topic==null)return[];return S.notes[S.topic]||Array(7).fill("");}
+function noteHint(p){const w=p.split(/\s+/);return w.slice(0,7).join(" ")+(w.length>7?"…":"");}
+
+/* ---------- çerçeve ---------- */
+function render(){
+  stopAll();
+  const first=(S.ad||"").trim().split(" ")[0];
+  $("hello").textContent=(first?first+", ":"")+"burs videosunu altı adımda birlikte hazırlayalım. İlerlemen bu cihazda kaydediliyor.";
+  $("steps").innerHTML=STEPS.map((s,i)=>`<button type="button" data-s="${i}" class="${i===S.step?"cur":(i<S.step?"done":"")}" aria-current="${i===S.step?"step":"false"}"><i></i><span>${i+1}. ${s}</span></button>`).join("");
+  $("prev").disabled=S.step===0;
+  $("next").textContent=S.step===STEPS.length-1?"Bitti":"İleri →";
+  $("next").disabled=S.step===0&&S.topic==null;
+  $("where").textContent=S.topic!=null?T[S.topic].t:"Henüz konu seçilmedi";
+  VIEWS[S.step]();
+  save();
+}
+function go(i){
+  if(i>0&&S.topic==null){toast("Önce bir konu seç");i=0;}
+  S.step=Math.max(0,Math.min(STEPS.length-1,i));render();window.scrollTo({top:0});
+}
+$("steps").addEventListener("click",e=>{const b=e.target.closest("button");if(b)go(+b.dataset.s);});
+$("prev").onclick=()=>go(S.step-1);
+$("next").onclick=()=>{if(S.step===STEPS.length-1){toast("Başarılar Selinay!");return;}go(S.step+1);};
+
+/* ---------- 1. Konu ---------- */
+function vTopic(){
+  const cats=["Tümü",...new Set(T.map(x=>x.k))];
+  $("view").innerHTML=`<section class="card">
+    <div class="head"><div class="eyebrow">Adım 1</div><h2>Hangi konu sana daha yakın?</h2>
+    <p class="muted">Kendi hayatından bir şey hatırlatan konuyu seç. Jüri en çok “bunu neden önemsiyorsun” kısmını dinler.</p></div>
+    <div class="row"><label class="f" for="ad">Adın<input type="text" id="ad" value="${esc(S.ad)}"></label>
+    <label class="f" for="uni">Üniversite<input type="text" id="uni" value="${esc(S.uni)}"></label></div>
+    <div class="chips" id="cats">${cats.map(c=>`<button type="button" aria-pressed="${c===S.cat}" data-c="${esc(c)}">${c}</button>`).join("")}</div>
+    <div class="topics" id="topics" role="radiogroup" aria-label="Konular">${T.map((x,i)=>(S.cat==="Tümü"||x.k===S.cat)?
+      `<button type="button" class="topic" role="radio" data-i="${i}" aria-checked="${i===S.topic}"><b>${x.t}</b><span>${x.w}</span></button>`:"").join("")}</div>
+  </section>`;
+  $("ad").oninput=e=>{S.ad=e.target.value;save();};
+  $("uni").oninput=e=>{S.uni=e.target.value;save();};
+  $("cats").onclick=e=>{const b=e.target.closest("button");if(b){S.cat=b.dataset.c;render();}};
+  $("topics").onclick=e=>{const b=e.target.closest(".topic");if(!b)return;S.topic=+b.dataset.i;save();toast("Seçildi: "+T[S.topic].t);go(1);};
+}
+
+/* ---------- 2. Metin ---------- */
+function vScript(){
+  const x=T[S.topic],ps=paras(),w=words(ps),sec=w/115*60;
+  $("view").innerHTML=`<section class="card">
+    <div class="head"><div class="eyebrow">Adım 2 · ${x.k}</div><h2>${x.t}</h2>
+    <p class="muted">Metni bir iki kez sesli oku. Bu bir taslak; ezberlemeyeceksin, ana fikirleri kafana yerleştireceksin. “Derste öğrendik” gibi sana uymayan yerleri kendi gerçeğine göre değiştir.</p></div>
+    <div class="note">Yaklaşık <b>${fmt(sec)}</b> sürer (${w} kelime). Sınır 2:00.</div>
+    <div>${x.b.map((p,i)=>`<div class="part" style="padding-block:8px"><div class="lbl">${LABELS[i][0]}${LABELS[i][1]?`<small>${LABELS[i][1]}</small>`:""}</div><p>${fill(p,true)}</p></div>`).join("")}</div>
+    <div class="box">
+      <h3>Senin hikâyen</h3>
+      <p class="muted" style="font-size:14px">${esc(x.tip)}</p>
+      <label class="f" for="story">Bu konuyu neden seçtin? Yaşadığın ya da gördüğün bir an (2–3 cümle yeter)
+      <textarea id="story" placeholder="Örn. Geçen yaz anneannem…">${esc(S.story)}</textarea></label>
+      <p class="muted" style="font-size:13.5px">Bunu videoda “Sorun” kısmının başında anlat. Metindeki genel cümlelerden çok daha etkili olur.</p>
+    </div>
+    <div class="row"><button class="b" id="copy" type="button">Metni kopyala</button></div>
+  </section>`;
+  $("story").oninput=e=>{S.story=e.target.value;save();};
+  $("copy").onclick=()=>{const t=ps.join("\n\n");try{navigator.clipboard.writeText(t).then(()=>toast("Kopyalandı"),()=>toast("Kopyalanamadı"));}catch(e){toast("Kopyalanamadı");}};
+}
+
+/* ---------- 3. Notlar ---------- */
+function vNotes(){
+  const x=T[S.topic],ps=paras(),n=myNotes();
+  $("view").innerHTML=`<section class="card">
+    <div class="head"><div class="eyebrow">Adım 3</div><h2>Kendi notlarını çıkar</h2>
+    <p class="muted">Her bölüm için sadece 3–6 anahtar kelime yaz. Çekimde tam metni değil bu notları göreceksin. Böylece okuyor gibi değil, anlatıyor gibi olursun.</p></div>
+    <div class="note"><b>Örnek:</b> “Ailem kalp masajı bilmiyor → ilk dakikalar → korku” gibi. Cümle kurma, sadece hatırlatıcı yaz.</div>
+    <div id="nlist">${x.b.map((p,i)=>`<div class="nrow">
+      <label class="f" for="n${i}"><b style="color:var(--ink)">${LABELS[i][0]}</b>${LABELS[i][1]?" · "+LABELS[i][1]:""}
+      <input type="text" id="n${i}" data-i="${i}" value="${esc(n[i]||"")}" placeholder="${esc(i===1&&S.story?"Kendi hikâyen + "+noteHint(ps[i]):noteHint(ps[i]))}"></label>
+      <details><summary>Metindeki hali</summary><p>${fill(p,true)}</p></details></div>`).join("")}</div>
+    <p class="muted" style="font-size:13.5px">Boş bıraktığın bölümlerde provada metnin ilk kelimeleri gösterilir.</p>
+  </section>`;
+  $("nlist").oninput=e=>{const i=e.target.dataset.i;if(i==null)return;const arr=myNotes().slice();arr[+i]=e.target.value;S.notes[S.topic]=arr;save();};
+}
+function prompterHTML(mode){
+  const ps=paras(),n=myNotes();
+  return LABELS.map((l,i)=>`<div><small>${l[0]}</small><div>${esc(mode==="full"?ps[i]:(n[i]&&n[i].trim()?n[i]:noteHint(ps[i])))}</div></div>`).join("");
+}
+
+/* ---------- 4. Dinle ---------- */
+let tts={on:false},amb=null,rec=null;
+const takes=[];
+async function hasSample(n){
+  try{const r=await fetch(`ses/konu-${n}.mp3`,{method:"HEAD",cache:"no-store"});return r.ok&&/audio/.test(r.headers.get("content-type")||"");}catch(e){return false;}
+}
+function vListen(){
+  const hasTTS="speechSynthesis" in window;
+  $("view").innerHTML=`<section class="card">
+    <div class="head"><div class="eyebrow">Adım 4</div><h2>Örnek okumayı dinle, odanı hazırla</h2>
+    <p class="muted">Metnin hangi hızda, nerelerde durarak okunacağını bir kere duy. Sonra çekim yapacağın odayı kontrol et.</p></div>
+    <div class="box"><h3>1 · Örnek okuma</h3>
+      <p class="muted" style="font-size:14px">Hız ve duraklamalar için dinle. Sen daha sıcak, kendi tarzınla anlatacaksın; birebir taklit etmene gerek yok.</p>
+      <div id="sample" class="muted">Yükleniyor…</div>
+      <div id="ttsText"></div>
+    </div>
+    <div class="box"><h3>2 · Ortam sesi testi</h3>
+      <p class="muted" style="font-size:14px">Çekim yapacağın odada 3 saniye hiç konuşmadan bekle, arka plan gürültüsünü ölçelim.</p>
+      <div class="row"><button class="b" id="ambBtn" type="button">Ortamı ölç (3 sn)</button></div>
+      <div class="meter"><i id="ambMeter"></i></div><div id="ambRes"></div>
+    </div>
+    <div class="box"><h3>Dinlerken dikkat et</h3>
+      <ul class="tips">
+        <li>Cümle sonlarında kısa duraklar var; sen de nefes al, acele etme.</li>
+        <li>Toplam süre 2 dakikanın altında. Sen kendi hikâyeni eklediğinde biraz uzayabilir, o zaman başka bir yerden kısalt.</li>
+        <li>Notlarını bir kere açıp örneği dinlerken takip et; hangi notun hangi cümleye denk geldiğini gör.</li>
+      </ul></div>
+  </section>`;
+  $("ambBtn").onclick=ambient;
+  const n=S.topic+1;
+  hasSample(n).then(ok=>{
+    const el=$("sample");if(!el)return;
+    if(ok){el.innerHTML=`<audio controls preload="metadata" src="ses/konu-${n}.mp3" style="width:100%"></audio>`;return;}
+    if(!hasTTS){el.innerHTML=`<div class="note warn">Bu tarayıcı sesli okumayı desteklemiyor. Chrome ya da Safari ile dene.</div>`;return;}
+    el.innerHTML=`<div class="row"><button class="b primary" id="ttsPlay" type="button">▶ Örneği dinle</button>
+      <label class="f" style="flex:0 1 200px" for="rate">Hız<select id="rate"><option value="0.9">Yavaş</option><option value="1" selected>Normal</option><option value="1.1">Hızlı</option></select></label></div><div id="ttsNote"></div>`;
+    $("ttsPlay").onclick=toggleTTS;checkVoice();
+  });
+}
+function trVoice(){return speechSynthesis.getVoices().find(v=>/^tr/i.test(v.lang));}
+function checkVoice(){
+  const set=()=>{const v=trVoice();const el=$("ttsNote");if(!el)return;el.innerHTML=v?"":`<div class="note warn">Cihazında Türkçe ses bulunamadı, okuma yabancı aksanlı olabilir.</div>`;};
+  set();speechSynthesis.onvoiceschanged=set;
+}
+function toggleTTS(){
+  if(tts.on){stopTTS();return;}
+  const ps=paras(),v=trVoice(),rate=+$("rate").value;
+  $("ttsText").innerHTML=ps.map((p,i)=>`<div class="part" id="tp${i}" style="padding-block:6px"><div class="lbl">${LABELS[i][0]}</div><p>${esc(p)}</p></div>`).join("");
+  tts.on=true;$("ttsPlay").textContent="■ Durdur";
+  let i=0;
+  const next=()=>{
+    if(!tts.on)return;
+    document.querySelectorAll("#ttsText .part").forEach(el=>el.classList.remove("speaking"));
+    if(i>=ps.length){stopTTS();return;}
+    const el=$("tp"+i);if(el)el.classList.add("speaking");
+    const u=new SpeechSynthesisUtterance(ps[i]);u.lang="tr-TR";if(v)u.voice=v;u.rate=rate;
+    u.onend=()=>{i++;setTimeout(next,450);};u.onerror=()=>stopTTS();
+    speechSynthesis.speak(u);
+  };
+  speechSynthesis.cancel();next();
+}
+function stopTTS(){
+  if(!("speechSynthesis" in window))return;
+  tts.on=false;speechSynthesis.cancel();
+  const b=$("ttsPlay");if(b)b.textContent="▶ Örneği dinle";
+  document.querySelectorAll("#ttsText .part").forEach(el=>el.classList.remove("speaking"));
+}
+
+function makeAnalyser(stream){
+  const AC=window.AudioContext||window.webkitAudioContext;const ctx=new AC();
+  const src=ctx.createMediaStreamSource(stream);const an=ctx.createAnalyser();an.fftSize=2048;src.connect(an);
+  const buf=new Float32Array(an.fftSize);
+  return{ctx,db(){an.getFloatTimeDomainData(buf);let s=0,pk=0;for(const x of buf){s+=x*x;pk=Math.max(pk,Math.abs(x));}
+    return{rms:20*Math.log10(Math.sqrt(s/buf.length)+1e-9),peak:20*Math.log10(pk+1e-9)};},close(){try{ctx.close();}catch(e){}}};
+}
+const pct=db=>Math.max(0,Math.min(100,(db+60)/60*100));
+async function ambient(){
+  const btn=$("ambBtn");btn.disabled=true;$("ambRes").innerHTML="";
+  let st;try{st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});}
+  catch(e){$("ambRes").innerHTML=`<div class="note warn">Mikrofon izni verilmedi. Tarayıcının adres çubuğundan izin verip tekrar dene.</div>`;btn.disabled=false;return;}
+  const a=makeAnalyser(st);const vals=[];const t0=performance.now();
+  amb={stop(){a.close();st.getTracks().forEach(t=>t.stop());}};
+  const loop=()=>{if(!amb)return;const d=a.db();vals.push(d.rms);const m=$("ambMeter");if(m)m.style.width=pct(d.rms)+"%";
+    if(performance.now()-t0<3000){requestAnimationFrame(loop);return;}
+    amb.stop();amb=null;btn.disabled=false;
+    vals.sort((x,y)=>x-y);const med=vals[Math.floor(vals.length/2)];
+    let cls,msg;
+    if(med<-55){cls="ok";msg="Ortam sessiz, çekim için çok iyi.";}
+    else if(med<-42){cls="";msg="Hafif bir arka plan sesi var. Pencereyi kapatmak, klimayı ya da vantilatörü kapatmak iyi olur.";}
+    else{cls="warn";msg="Ortam gürültülü. Daha sessiz bir oda seç; halı, perde ve dolap olan odalarda ses daha az yankılanır.";}
+    $("ambRes").innerHTML=`<div class="note ${cls}"><b>Yaklaşık ${Math.round(med)} dB.</b> ${msg}</div>`;};
+  loop();
+}
+
+/* ---------- 5. Çekim ---------- */
+const TECH=[
+ ["yatay","Telefon yatay","Şartnamede zorunlu."],
+ ["isik","Yüzün aydınlık","Pencereye dön, pencere arkanda olmasın. Akşamsa önüne bir lamba koy."],
+ ["arka","Arka plan sade","Düz duvar ya da düzenli bir köşe. Arkada insan, TV, dağınıklık olmasın."],
+ ["ses","Oda sessiz","Pencere kapalı, televizyon ve vantilatör kapalı."],
+ ["sabit","Telefon sabit","Kitapların ya da bir bardağın üstüne yasla, elde tutma. Göğsünden yukarısı görünsün."],
+ ["goz","Kameraya bak","Ekrana değil merceğe bak. Notların kameranın olduğu tarafta çıkacak."],
+ ["ucak","Bildirimler kapalı","Rahatsız Etmeyin ya da uçak modu açık olsun, arama gelip çekimi bölmesin."],
+ ["kiyafet","Sade kıyafet","Tek renkli, desensiz bir üst."]
+];
+let cam=null,camLoop=null,camAn=null,camRes=null;
+const coarse=()=>matchMedia("(pointer:coarse)").matches;
+function camSide(){
+  if(!coarse())return"top";
+  let a=(screen.orientation&&typeof screen.orientation.angle==="number")?screen.orientation.angle:(window.orientation||0);
+  if(a===90)return"left";if(a===270||a===-90)return"right";return"top";
+}
+function isPortrait(){return coarse()&&innerHeight>innerWidth;}
+function resLabel(w,h){
+  const lo=Math.min(w,h),hi=Math.max(w,h);
+  if(lo>=1080)return{t:`${hi}×${lo} · Full HD`,ok:true};
+  if(lo>=720)return{t:`${hi}×${lo} · HD`,ok:true};
+  return{t:`${hi}×${lo} · düşük`,ok:false};
+}
+function vCamera(){
+  $("view").innerHTML=`<section class="card">
+    <div class="head"><div class="eyebrow">Adım 5</div><h2>Videoyu burada çek</h2>
+    <p class="muted">Telefonu yatay tut ve kamerayı aç. Kutular yeşil olunca çekime başla. Ekranda notların görünecek, 3-2-1 sayımından sonra kayıt başlayacak. Bitirince videoyu HD olarak indirebilirsin.</p></div>
+    <div class="cam"><video id="cv" playsinline muted></video><div class="grid"></div><div class="empty" id="camEmpty">Kamerayı açınca görüntün burada çıkacak</div></div>
+    <div class="row"><button class="b" id="camBtn" type="button">Kamerayı aç</button><button class="b primary" id="shootBtn" type="button" disabled>● Çekime başla</button></div>
+    <div class="stats">
+      <div class="stat" id="stOr"><b>Telefon yönü</b>—</div>
+      <div class="stat" id="stLi"><b>Yüz aydınlığı</b>—</div>
+      <div class="stat" id="stSn"><b>Ses</b>—</div>
+      <div class="stat" id="stRs"><b>Kalite</b>—</div>
+    </div>
+    <label class="row" style="font-size:14px;cursor:pointer" for="auto"><input type="checkbox" id="auto" ${S.autoStop!==false?"checked":""} style="width:18px;height:18px;accent-color:var(--accent)"> 2:00 olunca kaydı otomatik durdur</label>
+    <div class="box"><h3>Çekimlerin</h3>
+      <div class="note warn" style="font-size:13.5px">Çekimler sadece bu sayfa açıkken durur. Beğendiğin çekimi <b>hemen indir</b>; sayfayı yenilersen ya da kapatırsan silinir.</div>
+      <div class="takes" id="vtakes"><p class="muted" style="font-size:14px">Henüz çekim yok.</p></div>
+    </div>
+    <div class="box"><h3>Çekimden önce</h3><div class="checks" id="tech">${TECH.map(t=>`<label><input type="checkbox" data-k="${t[0]}" ${S.tech[t[0]]?"checked":""}><span>${t[1]}<small>${t[2]}</small></span></label>`).join("")}</div></div>
+    <div class="box"><h3>Tavsiyeler</h3><ul class="tips">
+      <li>Kayıt başlayınca 1–2 saniye gülümseyip bekle, sonra konuşmaya başla. Bitirince de 1–2 saniye bekle.</li>
+      <li>3–4 kez çek, en doğal olanı seç. İlk çekim genelde en gergin olanıdır.</li>
+      <li>Takılırsan durma; cümleyi baştan söyleyip devam et. Kurgu yasak olduğu için video tek parça olmalı.</li>
+      <li>İndirdikten sonra videoyu kulaklıkla baştan sona izle: ses net mi, yüzün görünüyor mu, süre 2:00'ın altında mı?</li>
+    </ul></div>
+  </section>`;
+  $("tech").onchange=e=>{const k=e.target.dataset.k;if(k){S.tech[k]=e.target.checked;save();}};
+  $("auto").onchange=e=>{S.autoStop=e.target.checked;save();};
+  $("camBtn").onclick=()=>cam?stopCam():startCam();
+  $("shootBtn").onclick=shoot;
+  drawTakes();
+}
+async function getCam(){
+  const sets=[{width:{ideal:1920},height:{ideal:1080}},{width:{ideal:1280},height:{ideal:720}},{}];
+  for(const s of sets){
+    try{return await navigator.mediaDevices.getUserMedia({video:Object.assign({facingMode:"user",frameRate:{ideal:30}},s),audio:{echoCancellation:true,noiseSuppression:true}});}catch(e){if(e&&e.name==="NotAllowedError")throw e;}
+  }
+  throw new Error("kamera yok");
+}
+async function startCam(){
+  try{cam=await getCam();}catch(e){cam=null;toast("Kamera ve mikrofon izni gerekli");return;}
+  const v=$("cv");v.srcObject=cam;await v.play().catch(()=>{});
+  $("camEmpty").hidden=true;$("camBtn").textContent="Kamerayı kapat";$("shootBtn").disabled=false;
+  camAn=makeAnalyser(cam);
+  const c=document.createElement("canvas");c.width=64;c.height=36;const g=c.getContext("2d",{willReadFrequently:true});
+  camLoop=setInterval(()=>{
+    const vv=$("cv");if(!vv)return;const vw=vv.videoWidth,vh=vv.videoHeight;if(!vw)return;
+    const land=vw>=vh&&!isPortrait();
+    const o=$("stOr");o.className="stat "+(land?"ok":"warn");o.innerHTML=`<b>Telefon yönü</b>${land?"Yatay ✓":"Dikey: telefonu yan çevir"}`;
+    g.drawImage(vv,0,0,64,36);const d=g.getImageData(20,6,24,24).data;let s=0;
+    for(let i=0;i<d.length;i+=4)s+=0.2126*d[i]+0.7152*d[i+1]+0.0722*d[i+2];
+    const L=s/(d.length/4);const li=$("stLi");
+    const [cls,msg]=L<70?["warn","Karanlık: ışığa dön ya da önüne lamba koy"]:L>205?["warn","Çok parlak: doğrudan güneşten uzaklaş"]:["ok","İyi ✓"];
+    li.className="stat "+cls;li.innerHTML=`<b>Yüz aydınlığı</b>${msg}`;
+    const db=camAn.db().rms;const sn=$("stSn");
+    sn.innerHTML=`<b>Ses (konuşarak dene)</b><div class="meter" style="margin-top:6px"><i style="width:${pct(db)}%"></i></div>`;
+    const st=cam.getVideoTracks()[0].getSettings();camRes=resLabel(st.width||vw,st.height||vh);
+    const rs=$("stRs");rs.className="stat "+(camRes.ok?"ok":"warn");rs.innerHTML=`<b>Kalite</b>${camRes.t}${camRes.ok?" ✓":""}`;
+  },400);
+}
+function stopCam(){
+  if(rec)cancelRec();
+  if(camAn){camAn.close();camAn=null;}
+  if(cam){cam.getTracks().forEach(t=>t.stop());cam=null;}
+  clearInterval(camLoop);camLoop=null;
+  const v=$("cv");if(v)v.srcObject=null;
+  const e=$("camEmpty");if(e)e.hidden=false;
+  const b=$("camBtn");if(b)b.textContent="Kamerayı aç";const r=$("shootBtn");if(r)r.disabled=true;
+}
+function pickType(){
+  if(!window.MediaRecorder)return null;
+  const list=["video/mp4;codecs=avc1.640028,mp4a.40.2","video/mp4;codecs=avc1,mp4a","video/mp4","video/webm;codecs=vp9,opus","video/webm;codecs=vp8,opus","video/webm"];
+  return list.find(t=>MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(t))||"";
+}
+function ovNotes(full){
+  const ps=paras(),n=myNotes();
+  return LABELS.map((l,i)=>`<div><small>${l[0]}</small>${esc(full?ps[i]:(n[i]&&n[i].trim()?n[i]:noteHint(ps[i])))}</div>`).join("");
+}
+async function shoot(){
+  if(!cam)return;
+  const type=pickType();
+  if(type===null){toast("Bu tarayıcı video kaydedemiyor. Safari ya da Chrome ile aç.");return;}
+  const ov=document.createElement("div");ov.className="ov";ov.id="ov";
+  ov.innerHTML=`<video id="ovv" playsinline muted></video>
+    <div class="ov-notes ${camSide()}" id="ovNotes">${ovNotes(false)}</div>
+    <div class="ov-count" id="ovCount">3</div>
+    <div class="ov-port" id="ovPort" hidden>Telefonu yan çevir</div>
+    <div class="ov-bar"><span class="ov-time" id="ovTime">0:00</span>
+      <button type="button" class="ov-stop" id="ovStop" aria-label="Kaydı bitir"></button>
+      <span class="ov-side"><button type="button" class="ov-btn" id="ovFull">Tam metin</button><button type="button" class="ov-btn" id="ovCancel">Vazgeç</button></span></div>`;
+  document.body.appendChild(ov);
+  const ovv=$("ovv");ovv.srcObject=cam;ovv.play().catch(()=>{});
+  try{if(ov.requestFullscreen)await ov.requestFullscreen();}catch(e){}
+  try{if(screen.orientation&&screen.orientation.lock)await screen.orientation.lock("landscape");}catch(e){}
+  let full=false;
+  $("ovFull").onclick=()=>{full=!full;$("ovNotes").innerHTML=ovNotes(full);$("ovFull").textContent=full?"Notlar":"Tam metin";};
+  const place=()=>{const el=$("ovNotes");if(el)el.className="ov-notes "+camSide();const p=$("ovPort");if(p)p.hidden=!isPortrait();};
+  place();addEventListener("resize",place);addEventListener("orientationchange",place);
+  rec={phase:"count",place};
+  $("ovCancel").onclick=cancelRec;
+  $("ovStop").onclick=()=>{if(rec&&rec.phase==="rec")rec.mr.stop();};
+  for(const n of [3,2,1]){
+    if(!rec)return;const c=$("ovCount");if(c)c.textContent=n;
+    await new Promise(r=>setTimeout(r,900));
+  }
+  if(!rec)return;
+  $("ovCount").hidden=true;
+  const st=cam.getVideoTracks()[0].getSettings();const hi=Math.max(st.width||1280,st.height||720);
+  const opts={videoBitsPerSecond:hi>=1920?8000000:5000000,audioBitsPerSecond:128000};if(type)opts.mimeType=type;
+  let mr;try{mr=new MediaRecorder(cam,opts);}catch(e){try{mr=new MediaRecorder(cam);}catch(e2){toast("Kayıt başlatılamadı");closeOv();rec=null;return;}}
+  const chunks=[];const t0=Date.now();
+  mr.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};
+  mr.onstop=()=>{
+    const discard=rec&&rec.discard;const dur=(Date.now()-t0)/1000;
+    closeOv();rec=null;
+    if(discard||!chunks.length)return;
+    const mime=mr.mimeType||type||"video/webm";const blob=new Blob(chunks,{type:mime});
+    const ext=/mp4/.test(mime)?"mp4":"webm";
+    takes.unshift({url:URL.createObjectURL(blob),blob,dur,ext,mime,n:takes.length+1,size:blob.size,res:camRes?camRes.t:""});
+    drawTakes();const el=$("vtakes");if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
+    toast("Çekim hazır, aşağıdan indirebilirsin");
+  };
+  mr.start(1000);
+  rec.phase="rec";rec.mr=mr;
+  const tick=()=>{
+    if(!rec||rec.phase!=="rec")return;
+    const s=(Date.now()-t0)/1000;const el=$("ovTime");
+    if(el){el.innerHTML=`<span class="recdot"></span>${fmt(s)} / 2:00`;el.className="ov-time"+(s>=120?" over":s>=105?" near":"");}
+    if(S.autoStop!==false&&s>=120){mr.stop();return;}
+    if(s>=180){mr.stop();return;}
+    requestAnimationFrame(tick);
+  };
+  tick();
+}
+function cancelRec(){
+  if(!rec)return;
+  rec.discard=true;
+  if(rec.mr&&rec.mr.state!=="inactive"){rec.mr.stop();}else{closeOv();rec=null;}
+}
+function closeOv(){
+  if(rec&&rec.place){removeEventListener("resize",rec.place);removeEventListener("orientationchange",rec.place);}
+  try{if(document.fullscreenElement)document.exitFullscreen();}catch(e){}
+  try{if(screen.orientation&&screen.orientation.unlock)screen.orientation.unlock();}catch(e){}
+  const ov=$("ov");if(ov)ov.remove();
+}
+function safeName(){return ((S.ad||"Video").trim()+" - Video Gorevi").replace(/[\\/:*?"<>|]/g,"");}
+function drawTakes(){
+  const el=$("vtakes");if(!el)return;
+  if(!takes.length){el.innerHTML=`<p class="muted" style="font-size:14px">Henüz çekim yok.</p>`;return;}
+  el.innerHTML=takes.map((t,i)=>`<div class="take">
+    <video src="${t.url}" controls playsinline preload="metadata"></video>
+    <div class="take-info">
+      <b>Çekim ${t.n}</b>
+      <span style="${t.dur>120?"color:var(--accent);font-weight:600":""}">${fmt(t.dur)}${t.dur>120?" · 2:00'ı geçti":""}</span>
+      <span class="muted">${t.res?t.res+" · ":""}${(t.size/1048576).toFixed(1)} MB · .${t.ext}</span>
+      <div class="row">
+        <a class="b primary" href="${t.url}" download="${esc(safeName())} ${t.n}.${t.ext}">HD indir</a>
+        ${navigator.canShare?`<button class="b" type="button" data-share="${i}">Galeriye kaydet / paylaş</button>`:""}
+        <button class="b" type="button" data-del="${i}">Sil</button>
+      </div>
+      ${t.ext==="webm"?`<span class="muted" style="font-size:12.5px">Bu tarayıcı .webm kaydetti. Başvuru sistemi kabul etmezse telefonda Safari ya da Chrome ile çek; orada .mp4 olur.</span>`:""}
+    </div></div>`).join("");
+  el.onclick=async e=>{
+    const s=e.target.closest("[data-share]"),d=e.target.closest("[data-del]");
+    if(s){const t=takes[+s.dataset.share];
+      const f=new File([t.blob],`${safeName()} ${t.n}.${t.ext}`,{type:t.mime.split(";")[0]});
+      if(navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});}catch(err){}}else toast("Bu cihaz paylaşmayı desteklemiyor, HD indir'i kullan");}
+    if(d){const t=takes[+d.dataset.del];URL.revokeObjectURL(t.url);takes.splice(+d.dataset.del,1);drawTakes();}
+  };
+}
+
+/* ---------- 6. Son kontrol ---------- */
+const FINAL=[
+ ["sure","Video 2:00'ın altında","Üstündeki kayıtlar puan kaybeder ya da değerlendirilmeyebilir."],
+ ["tanit","Kendimi tanıttım","Ad, üniversite, sınıf."],
+ ["s1","1. Hangi soruna odaklandığımı ve nedenini söyledim",""],
+ ["s2","2. Tıp eğitiminden hangi bilgiyi kullanacağımı söyledim",""],
+ ["s3","3. Projenin ne yapacağını somut anlattım","Nerede, kime, ne sıklıkla."],
+ ["s4","4. Kimlerle iş birliği yapacağımı ve gönüllüleri anlattım",""],
+ ["s5","5. Başarıyı nasıl ölçeceğimi ve nasıl süreceğini söyledim",""],
+ ["hikaye","Kendi hikâyemi ya da gözlemimi ekledim","Videoyu senin yapan kısım bu."],
+ ["kendi","Ezberden okumadım, notlarıma bakarak anlattım",""],
+ ["yatay2","Yatay çektim, yüzüm aydınlık, arka plan sade",""],
+ ["efekt","Filtre, müzik, kurgu, ses efekti yok",""],
+ ["indir","Videoyu indirdim, telefonda açılıyor",""],
+ ["izle","İndirdiğim videoyu kulaklıkla baştan sona izledim",""],
+];
+function vFinal(){
+  const done=FINAL.filter(f=>S.checks[f[0]]).length;
+  $("view").innerHTML=`<section class="card">
+    <div class="head"><div class="eyebrow">Adım 6</div><h2>Göndermeden önce son kontrol</h2>
+    <p class="muted">Hepsini işaretleyebiliyorsan video hazır.</p></div>
+    <div class="progress"><span><b id="cnt">${done}</b> / ${FINAL.length}</span><div class="meter"><i id="cbar" style="width:${done/FINAL.length*100}%"></i></div></div>
+    <div class="checks" id="final">${FINAL.map(f=>`<label><input type="checkbox" data-k="${f[0]}" ${S.checks[f[0]]?"checked":""}><span>${f[1]}${f[2]?`<small>${f[2]}</small>`:""}</span></label>`).join("")}</div>
+    <div id="fmsg"></div>
+    <div class="box"><h3>Yükleme</h3><ul class="tips">
+      <li>Son güne bırakma, sistem yoğunlaşabilir. En az bir gün önce yükle.</li>
+      <li>Dosya çok büyükse telefonun kendi araçlarıyla sıkıştırma; kaliteyi düşürmeden Wi‑Fi'dan yükle.</li>
+      <li>Dosya adına adını yaz, örneğin “${esc((S.ad||"Ad Soyad").trim())} - Video Görevi”.</li>
+      <li>Yükledikten sonra videonun açıldığını ve sesin geldiğini kontrol et.</li>
+    </ul></div>
+    <div class="row"><button class="b" id="reset" type="button">Baştan başla</button></div>
+  </section>`;
+  const upd=()=>{const d=FINAL.filter(f=>S.checks[f[0]]).length;$("cnt").textContent=d;$("cbar").style.width=d/FINAL.length*100+"%";
+    $("fmsg").innerHTML=d===FINAL.length?`<div class="note ok"><b>Hazırsın.</b> Bol şans Selinay!</div>`:"";};
+  $("final").onchange=e=>{const k=e.target.dataset.k;if(k){S.checks[k]=e.target.checked;save();upd();}};
+  let armed=false;
+  $("reset").onclick=e=>{
+    if(!armed){armed=true;e.target.textContent="Emin misin? Tekrar bas";setTimeout(()=>{armed=false;const b=$("reset");if(b)b.textContent="Baştan başla";},3000);return;}
+    S.step=0;S.topic=null;S.story="";S.checks={};S.tech={};save();render();};
+  upd();
+}
+
+function stopAll(){stopTTS();if(amb){amb.stop();amb=null;}stopCam();}
+const VIEWS=[vTopic,vScript,vNotes,vListen,vCamera,vFinal];
+if(S.topic==null)S.step=0;
+render();
+</script>
+</body>
+</html>
